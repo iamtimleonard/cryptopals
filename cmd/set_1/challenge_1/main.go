@@ -5,18 +5,31 @@ import (
 	"encoding/hex"
 	"fmt"
 	"log"
+	"os"
 )
 
+// hex to base64
 func main () {
-	src := []byte("49276d206b696c6c696e6720796f757220627261696e206c696b65206120706f69736f6e6f7573206d757368726f6f6d")
+	// get hex string from command line
+	if (len(os.Args) < 2) {
+		fmt.Println("Error: missing argument")
+		os.Exit(1)
+	}
+
+	// convert hex string to bytes
+	src := []byte(os.Args[1])
+	// create byte slice for decoded hex string
 	decodedBytes := make([]byte, hex.DecodedLen(len(src)))
+	// decode to byte slice
 	decodedLen, err := hex.Decode(decodedBytes, src)
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
+	// create byte slice for hex64 encoded string
 	encodedBytes := make([]byte, base64.StdEncoding.EncodedLen(decodedLen))
+	// encode string to byte slice
 	base64.StdEncoding.Encode(encodedBytes, decodedBytes[:decodedLen])
 
 	fmt.Printf("%s\n", encodedBytes)
